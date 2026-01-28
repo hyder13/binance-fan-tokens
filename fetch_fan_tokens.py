@@ -5,11 +5,11 @@ import os
 
 def fetch_fan_tokens():
     print("Fetching fan tokens from Binance...")
-    # 使用 Binance 24hr ticker API
-    url = "https://api.binance.com/api/v3/ticker/24hr"
+    # 使用 Binance 24hr ticker API (試著換成 api.binance.us 或 api1/api2/api3 子網域)
+    url = "https://api1.binance.com/api/v3/ticker/24hr"
     
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=10)
         response.raise_for_status()
         tickers = response.json()
         
