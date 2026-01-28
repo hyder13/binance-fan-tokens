@@ -102,17 +102,44 @@
 <script>
     async function fetchData() {
         try {
-            const response = await fetch('fan_tokens.json');
-            const data = await response.json();
+            // 直接從 Binance API 獲取數據，不再依賴本地 JSON
+            const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
+            const tickers = await response.json();
+            
+            // 定義要顯示的代幣及其市值權重
+            const MCAP_RANK = {
+                "SANTOS": 12, "LAZIO": 11, "PORTO": 10, "PSG": 9, "BAR": 8, "CITY": 7,
+                "ALPINE": 6, "JUV": 5, "ACM": 4, "ATM": 3, "ASR": 2, "OG": 1
+            };
+
+            const fanSymbols = Object.keys(MCAP_RANK);
+            const tokens = [];
+
+            tickers.forEach(ticker => {
+                if (ticker.symbol.endsWith('USDT')) {
+                    const symbol = ticker.symbol.replace('USDT', '');
+                    if (fanSymbols.includes(symbol)) {
+                        tokens.push({
+                            symbol: symbol,
+                            price: ticker.lastPrice,
+                            priceChangePercent: ticker.priceChangePercent,
+                            mcap: MCAP_RANK[symbol]
+                        });
+                    }
+                }
+            });
+
+            // 按市值權重排序
+            tokens.sort((a, b) => b.mcap - a.mcap);
             
             const timeEl = document.getElementById('update-time');
-            const date = new Date(data.last_updated);
-            timeEl.innerText = `最後更新: ${date.toLocaleString()}`;
+            const now = new Date();
+            timeEl.innerText = `最後更新: ${now.toLocaleString()} (Binance 直連)`;
             
             const listEl = document.getElementById('token-list');
             listEl.innerHTML = '';
             
-            data.tokens.forEach(token => {
+            tokens.forEach(token => {
                 const card = document.createElement('div');
                 card.className = 'token-card';
                 
@@ -132,7 +159,8 @@
                 listEl.appendChild(card);
             });
         } catch (e) {
-            document.getElementById('token-list').innerHTML = '<div class="loader">尚未有數據，等待第一次自動更新...</div>';
+            console.error(e);
+            document.getElementById('token-list').innerHTML = '<div class="loader">獲取即時數據失敗，請稍後再試...</div>';
         }
     }
     fetchData();
