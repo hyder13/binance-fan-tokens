@@ -5,11 +5,15 @@ import os
 
 def fetch_fan_tokens():
     print("Fetching fan tokens from Binance...")
-    # 使用 Binance 24hr ticker API (試著換成 api.binance.us 或 api1/api2/api3 子網域)
-    url = "https://api1.binance.com/api/v3/ticker/24hr"
+    # 使用 Binance 24hr ticker API (更換為更穩定的 data endpoint)
+    url = "https://data-api.binance.vision/api/v3/ticker/24hr"
     
     try:
-        response = requests.get(url, timeout=10)
+        # 添加 User-Agent
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+        response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
         tickers = response.json()
         
