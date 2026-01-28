@@ -100,11 +100,24 @@
 </div>
 
 <script>
+    let lastFetchTime = 0;
+    const CACHE_DURATION = 10000; // 10秒快取，防止頻繁重整刷爆 API
+
     async function fetchData() {
+        const now = Date.now();
+        // 如果距離上次抓取不到 10 秒，直接跳過不抓取
+        if (now - lastFetchTime < CACHE_DURATION) {
+            console.log("使用快取數據，避免過於頻繁請求 Binance API");
+            return;
+        }
+
         try {
-            // 直接從 Binance API 獲取數據，不再依賴本地 JSON
+            // 直接從 Binance API 獲取數據
             const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
+            if (!response.ok) throw new Error('API 請求失敗');
+            
             const tickers = await response.json();
+            lastFetchTime = Date.now(); // 更新成功抓取時間
             
             // 定義要顯示的代幣及其市值權重
             const MCAP_RANK = {
