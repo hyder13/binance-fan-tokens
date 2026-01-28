@@ -136,6 +136,7 @@
                             symbol: symbol,
                             price: ticker.lastPrice,
                             priceChangePercent: ticker.priceChangePercent,
+                            quoteVolume: ticker.quoteVolume, // 確保抓取成交額
                             mcap: MCAP_RANK[symbol]
                         });
                     }
@@ -160,9 +161,16 @@
                 const changeClass = isUp ? 'up' : 'down';
                 const sign = isUp ? '+' : '';
                 
+                // 格式化成交量作為市值的參考展示 (Binance API 24h ticker 不直接提供 Market Cap，通常用 Quote Volume 作為熱度參考)
+                // 這裡我們展示 quoteVolume，並標註為 24h Vol
+                const vol = parseFloat(token.quoteVolume).toLocaleString(undefined, { maximumFractionDigits: 0 });
+                
                 card.innerHTML = `
                     <div class="info">
-                        <div class="symbol">${token.symbol} / USDT</div>
+                        <div>
+                            <div class="symbol">${token.symbol} / USDT</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">24h Vol: $${vol}</div>
+                        </div>
                     </div>
                     <div class="price-info">
                         <div class="price">$ ${parseFloat(token.price).toFixed(4)}</div>
