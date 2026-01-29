@@ -4,10 +4,13 @@ import requests
 import json
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 app = Flask(__name__, static_folder='.')
 CORS(app)
+
+# 設定台灣時區 (UTC+8)
+TW_TZ = timezone(timedelta(hours=8))
 
 DATA_FILE = "fan_tokens.json"
 CACHE_SECONDS = 60 # 幣圈變化快，設 1 分鐘快取
@@ -68,7 +71,7 @@ def fetch_binance_data():
             if 'mcap' in r: del r['mcap']
             
         output = {
-            "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "last_updated": datetime.now(TW_TZ).strftime("%Y-%m-%d %H:%M:%S"),
             "tokens": results
         }
         
