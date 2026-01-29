@@ -3,87 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Binance 粉絲代幣追蹤</title>
+    <title>小U 幣圈導航儀 (Binance Fan Tokens)</title>
     <style>
         :root {
             --bg: #0b0e11;
             --card: #1e2329;
+            --accent: #fcd535;
             --text: #eaecef;
             --text-muted: #848e9c;
-            --yellow: #fcd535;
             --green: #0ecb81;
             --red: #f6465d;
             --border: #353945;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             padding: 20px;
-            display: flex;
-            justify-content: center;
         }
         .container {
-            width: 100%;
             max-width: 600px;
+            margin: 0 auto;
         }
         header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
+            text-align: center;
+            margin-bottom: 30px;
         }
         h1 {
-            font-size: 1.5rem;
-            color: var(--yellow);
-            margin: 0;
+            color: var(--accent);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
         }
         .last-update {
-            font-size: 0.75rem;
             color: var(--text-muted);
+            font-size: 0.8rem;
         }
-        .token-card {
+        .token-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .card {
             background: var(--card);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 16px;
-            margin-bottom: 12px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.02);
+            border-color: var(--accent);
+        }
+        .card-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid transparent;
-            transition: border-color 0.2s;
-        }
-        .token-card:hover {
-            border-color: var(--border);
-        }
-        .info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            margin-bottom: 12px;
         }
         .symbol {
-            font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            font-weight: 800;
         }
-        .price-info {
+        .price-box {
             text-align: right;
         }
         .price {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 4px;
+            font-size: 1.2rem;
+            font-weight: 700;
         }
         .change {
-            font-size: 0.875rem;
-            padding: 2px 6px;
-            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
         .up { color: var(--green); }
         .down { color: var(--red); }
-        .loader {
-            text-align: center;
-            padding: 40px;
+        
+        .u-insight {
+            background: rgba(252, 213, 53, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            border-radius: 4px;
+        }
+        .vol-info {
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
     </style>
@@ -91,101 +97,53 @@
 <body>
 <div class="container">
     <header>
-        <h1>⚽ Binance 粉絲代幣</h1>
-        <div id="update-time" class="last-update">載入中...</div>
+        <h1>⚽ 小U 幣圈導航儀</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Binance 粉絲代幣行情 · 小U 獨家短評</p>
+        <div id="update-time" class="last-update">同步中...</div>
     </header>
-    <div id="token-list">
-        <div class="loader">正在獲取最新行情...</div>
+    <div id="token-list" class="token-list">
+        <!-- 載入中 -->
     </div>
 </div>
 
 <script>
-    let lastFetchTime = 0;
-    const CACHE_DURATION = 10000; // 10秒快取，防止頻繁重整刷爆 API
-
-    async function fetchData() {
-        const now = Date.now();
-        // 如果距離上次抓取不到 10 秒，直接跳過不抓取
-        if (now - lastFetchTime < CACHE_DURATION) {
-            console.log("使用快取數據，避免過於頻繁請求 Binance API");
-            return;
-        }
-
+    async function fetchTokens() {
         try {
-            // 直接從 Binance API 獲取數據
-            const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
-            if (!response.ok) throw new Error('API 請求失敗');
+            const response = await fetch('/api/tokens');
+            const data = await response.json();
             
-            const tickers = await response.json();
-            lastFetchTime = Date.now(); // 更新成功抓取時間
-            
-            // 定義要顯示的代幣及其市值權重
-            const MCAP_RANK = {
-                "SANTOS": 12, "LAZIO": 11, "PORTO": 10, "PSG": 9, "BAR": 8, "CITY": 7,
-                "ALPINE": 6, "JUV": 5, "ACM": 4, "ATM": 3, "ASR": 2, "OG": 1
-            };
+            document.getElementById('update-time').innerText = `最後更新: ${data.last_updated}`;
+            const list = document.getElementById('token-list');
+            list.innerHTML = '';
 
-            const fanSymbols = Object.keys(MCAP_RANK);
-            const tokens = [];
-
-            tickers.forEach(ticker => {
-                if (ticker.symbol.endsWith('USDT')) {
-                    const symbol = ticker.symbol.replace('USDT', '');
-                    if (fanSymbols.includes(symbol)) {
-                        tokens.push({
-                            symbol: symbol,
-                            price: ticker.lastPrice,
-                            priceChangePercent: ticker.priceChangePercent,
-                            quoteVolume: ticker.quoteVolume, // 確保抓取成交額
-                            mcap: MCAP_RANK[symbol]
-                        });
-                    }
-                }
-            });
-
-            // 按市值權重排序
-            tokens.sort((a, b) => b.mcap - a.mcap);
-            
-            const timeEl = document.getElementById('update-time');
-            const now = new Date();
-            timeEl.innerText = `最後更新: ${now.toLocaleString()} (Binance 直連)`;
-            
-            const listEl = document.getElementById('token-list');
-            listEl.innerHTML = '';
-            
-            tokens.forEach(token => {
-                const card = document.createElement('div');
-                card.className = 'token-card';
-                
-                const isUp = parseFloat(token.priceChangePercent) >= 0;
+            data.tokens.forEach(t => {
+                const isUp = parseFloat(t.priceChangePercent) >= 0;
                 const changeClass = isUp ? 'up' : 'down';
                 const sign = isUp ? '+' : '';
                 
-                // 格式化成交量作為市值的參考展示 (Binance API 24h ticker 不直接提供 Market Cap，通常用 Quote Volume 作為熱度參考)
-                // 這裡我們展示 quoteVolume，並標註為 24h Vol
-                const vol = parseFloat(token.quoteVolume).toLocaleString(undefined, { maximumFractionDigits: 0 });
-                
+                const card = document.createElement('div');
+                card.className = 'card';
                 card.innerHTML = `
-                    <div class="info">
-                        <div>
-                            <div class="symbol">${token.symbol} / USDT</div>
-                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">24h Vol: $${vol}</div>
+                    <div class="card-top">
+                        <div class="symbol">${t.symbol} <span style="font-size: 0.8rem; color: var(--text-muted);">/ USDT</span></div>
+                        <div class="price-box">
+                            <div class="price">$ ${parseFloat(t.price).toFixed(4)}</div>
+                            <div class="change ${changeClass}">${sign}${t.priceChangePercent}%</div>
                         </div>
                     </div>
-                    <div class="price-info">
-                        <div class="price">$ ${parseFloat(token.price).toFixed(4)}</div>
-                        <div class="change ${changeClass}">${sign}${token.priceChangePercent}%</div>
+                    <div class="vol-info">24h 成交額: $ ${parseFloat(t.quoteVolume).toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+                    <div class="u-insight">
+                        <strong>🦉 小U 提醒：</strong><br>${t.u_insight}
                     </div>
                 `;
-                listEl.appendChild(card);
+                list.appendChild(card);
             });
         } catch (e) {
-            console.error(e);
-            document.getElementById('token-list').innerHTML = '<div class="loader">獲取即時數據失敗，請稍後再試...</div>';
+            document.getElementById('token-list').innerHTML = '<p style="text-align:center">正在喚醒小U 數據庫...</p>';
         }
     }
-    fetchData();
-    setInterval(fetchData, 60000); // 每分鐘刷一次頁面
+    fetchTokens();
+    setInterval(fetchTokens, 30000);
 </script>
 </body>
 </html>
