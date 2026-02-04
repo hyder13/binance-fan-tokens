@@ -1,89 +1,89 @@
 {
-    "last_updated": "2026-02-04T08:34:18Z",
+    "last_updated": "2026-02-04T09:37:54Z",
     "tokens": [
         {
             "symbol": "SANTOS",
-            "price": "2.11000000",
-            "priceChangePercent": "2.827",
-            "volume": "390317.66000000",
-            "quoteVolume": "810341.26487000"
+            "price": "2.10600000",
+            "priceChangePercent": "3.337",
+            "volume": "386801.70000000",
+            "quoteVolume": "803451.02227000"
         },
         {
             "symbol": "LAZIO",
-            "price": "0.97200000",
-            "priceChangePercent": "0.517",
-            "volume": "276829.83000000",
-            "quoteVolume": "267553.14354000"
+            "price": "0.96600000",
+            "priceChangePercent": "0.520",
+            "volume": "270750.57000000",
+            "quoteVolume": "261739.47304000"
         },
         {
             "symbol": "PORTO",
-            "price": "1.11600000",
-            "priceChangePercent": "3.621",
-            "volume": "294876.03000000",
-            "quoteVolume": "321218.03806000"
+            "price": "1.10500000",
+            "priceChangePercent": "3.659",
+            "volume": "295679.82000000",
+            "quoteVolume": "322430.54624000"
         },
         {
             "symbol": "PSG",
-            "price": "0.70100000",
-            "priceChangePercent": "-2.232",
-            "volume": "558494.75000000",
-            "quoteVolume": "396413.98066000"
+            "price": "0.69800000",
+            "priceChangePercent": "-2.104",
+            "volume": "557673.09000000",
+            "quoteVolume": "395669.73404000"
         },
         {
             "symbol": "BAR",
             "price": "0.49800000",
-            "priceChangePercent": "0.403",
-            "volume": "1246228.78000000",
-            "quoteVolume": "619677.33672000"
+            "priceChangePercent": "1.014",
+            "volume": "1235088.22000000",
+            "quoteVolume": "614424.43378000"
         },
         {
             "symbol": "CITY",
-            "price": "0.56200000",
-            "priceChangePercent": "0.537",
-            "volume": "1673076.10000000",
-            "quoteVolume": "946787.09992000"
+            "price": "0.55800000",
+            "priceChangePercent": "0.541",
+            "volume": "1673031.85000000",
+            "quoteVolume": "946893.07870000"
         },
         {
             "symbol": "ALPINE",
-            "price": "0.45100000",
-            "priceChangePercent": "0.445",
-            "volume": "1641494.87000000",
-            "quoteVolume": "735871.74697000"
+            "price": "0.44800000",
+            "priceChangePercent": "0.674",
+            "volume": "1616298.68000000",
+            "quoteVolume": "724792.93993000"
         },
         {
             "symbol": "JUV",
-            "price": "0.62000000",
-            "priceChangePercent": "0.977",
-            "volume": "1893618.09000000",
-            "quoteVolume": "1185418.98853000"
+            "price": "0.61000000",
+            "priceChangePercent": "-0.164",
+            "volume": "1923886.18000000",
+            "quoteVolume": "1204030.76224000"
         },
         {
             "symbol": "ACM",
-            "price": "0.45200000",
-            "priceChangePercent": "-1.094",
-            "volume": "2045959.90000000",
-            "quoteVolume": "924571.62370000"
+            "price": "0.45000000",
+            "priceChangePercent": "-1.316",
+            "volume": "2054350.40000000",
+            "quoteVolume": "928117.34990000"
         },
         {
             "symbol": "ATM",
-            "price": "0.87400000",
-            "priceChangePercent": "-0.795",
-            "volume": "3088897.48000000",
-            "quoteVolume": "2844021.30256000"
+            "price": "0.86400000",
+            "priceChangePercent": "-3.786",
+            "volume": "3013149.62000000",
+            "quoteVolume": "2775950.56846000"
         },
         {
             "symbol": "ASR",
-            "price": "1.43600000",
-            "priceChangePercent": "0.209",
-            "volume": "554787.60000000",
-            "quoteVolume": "793784.18590000"
+            "price": "1.42800000",
+            "priceChangePercent": "0.493",
+            "volume": "536309.60000000",
+            "quoteVolume": "767562.46910000"
         },
         {
             "symbol": "OG",
-            "price": "4.13800000",
-            "priceChangePercent": "24.601",
-            "volume": "5151531.50000000",
-            "quoteVolume": "20674705.26520000"
+            "price": "3.96900000",
+            "priceChangePercent": "17.670",
+            "volume": "5290602.70000000",
+            "quoteVolume": "21264741.87970000"
         }
     ]
 }
